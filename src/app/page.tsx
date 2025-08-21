@@ -8,7 +8,7 @@ export default function Home() {
         <img src="blur-green-bg.png" alt="bg image" className="" />
       </div>
 
-      <div className="absolute -z-50  block md:hidden   ">
+      <div className="absolute -z-50 w-[100vw]  block md:hidden   ">
         <img src="blur-green-bg-mob.png" alt="bg image" className="" />
       </div>
       <div className="translate-y-[-10%]  z-40">

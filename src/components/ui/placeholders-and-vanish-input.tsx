@@ -1,5 +1,4 @@
 "use client";
-
 import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState, forwardRef } from "react";
 import { cn } from "@/lib/utils";
@@ -66,9 +65,10 @@ export const PlaceholdersAndVanishInput = forwardRef<
     const computedStyles = getComputedStyle(inputRef.current);
 
     const fontSize = parseFloat(computedStyles.getPropertyValue("font-size"));
-    ctx.font = `${fontSize * 2}px ${computedStyles.fontFamily}`;
+    ctx.font = `${fontSize * 2.125}px ${computedStyles.fontFamily}`;
     ctx.fillStyle = "#FFF";
-    ctx.fillText(value, 16, 40);
+    // Adjust text position to better align with the input
+    ctx.fillText(value, 16, 54);
 
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
@@ -179,6 +179,12 @@ export const PlaceholdersAndVanishInput = forwardRef<
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Blur the input to hide mobile keyboard
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+    
     vanishAndSubmit();
     onSubmit && onSubmit(e);
   };
@@ -197,14 +203,14 @@ export const PlaceholdersAndVanishInput = forwardRef<
     <form
       ref={ref}
       className={cn(
-        "w-full relative max-w-xl mx-auto bg-white/40 border-black/10 dark:bg-zinc-800/40 dark:border-white/20 border-[1px] h-12 rounded-full overflow-hidden shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),_0px_1px_0px_0px_rgba(25,28,33,0.02),_0px_0px_0px_1px_rgba(25,28,33,0.08)] transition duration-200",
+        "w-full relative max-w-xl mx-auto bg-white/40 border-black/10 dark:bg-zinc-800/40 dark:border-white/20 border-[1px] h-14 rounded-full overflow-hidden shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),_0px_1px_0px_0px_rgba(25,28,33,0.02),_0px_0px_0px_1px_rgba(25,28,33,0.08)] transition duration-200",
         value && "bg-gray-50/10"
       )}
       onSubmit={handleSubmit}
     >
       <canvas
         className={cn(
-          "absolute pointer-events-none  text-base transform scale-50 top-[20%] left-2 sm:left-8 origin-top-left filter invert dark:invert-0 pr-20",
+          "absolute pointer-events-none text-base transform scale-50 top-[11%]  left-2 sm:left-4 origin-top-left filter invert dark:invert-0 pr-20",
           !animating ? "opacity-0" : "opacity-100"
         )}
         ref={canvasRef}
@@ -215,8 +221,9 @@ export const PlaceholdersAndVanishInput = forwardRef<
         ref={inputRef}
         value={value}
         type="text"
+        style={{ fontSize: '16px' }}
         className={cn(
-          "w-full relative text-sm sm:text-base z-40 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-10 pr-20",
+          "w-full relative resize-none z-40 border-none dark:text-white bg-transparent text-black h-full rounded-full focus:outline-none focus:ring-0 pl-4 sm:pl-6 pr-20",
           animating && "text-transparent dark:text-transparent"
         )}
       />
@@ -224,7 +231,7 @@ export const PlaceholdersAndVanishInput = forwardRef<
       <button
         disabled={!value}
         type="submit"
-        className="absolute right-2 top-1/2 z-40 -translate-y-1/2 h-8 w-8 rounded-full disabled:bg-gray-100 bg-black dark:bg-zinc-900 dark:disabled:bg-zinc-800 transition duration-200 flex items-center justify-center"
+        className="absolute right-2 top-1/2 z-40 -translate-y-1/2 h-8 w-8 rounded-full transition duration-200 flex items-center justify-center"
       >
         <motion.svg
           xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +286,8 @@ export const PlaceholdersAndVanishInput = forwardRef<
                 duration: 0.3,
                 ease: "linear",
               }}
-              className="dark:text-zinc-500 text-sm sm:text-base font-normal text-neutral-500 pl-4 sm:pl-12 text-left w-[calc(100%-2rem)] truncate"
+              className="dark:text-zinc-500 text-base sm:text-base font-normal text-neutral-500 pl-4 sm:pl-6 text-left w-[calc(100%-2rem)] truncate"
+              style={{ fontSize: '16px' }}
             >
               {placeholders[currentPlaceholder]}
             </motion.p>

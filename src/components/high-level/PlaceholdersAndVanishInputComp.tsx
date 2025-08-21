@@ -2,24 +2,24 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { PlaceholdersAndVanishInput } from "../ui/placeholders-and-vanish-input";
-
+  const placeholders = [
+    "Where is cia labs located?",
+    "What is the full form of cia labs?",
+    "What is community day",
+    "is there an interview for joining",
+    
+  ];
 export function PlaceholdersAndVanishInputDemo() {
   const [inputValue, setInputValue] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
-  const placeholders = [
-    "What's the first rule of Fight Club?",
-    "Who is Tyler Durden?",
-    "Where is Andrew Laeddis Hiding?",
-    "Write a Javascript method to reverse a string",
-    "How to assemble your own PC?",
-  ];
+  
 
   const options = [
     "What is cia labs?",
     "How do i join it?",
-    "Full form of cia labs",
+    "What do people do at cia labs?",
   ];
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,14 +30,28 @@ export function PlaceholdersAndVanishInputDemo() {
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    // Dynamically set timeout based on input length
+    const baseTimeout = 700;
+    const maxTimeout = 1800;
+    const maxLength = "What do people do at cia labs?".length;
+    const minLength = "How do i join it?".length;
+    const inputLen = inputValue.trim().length;
+
+    // Linear interpolation between min and max timeout
+    let timeout = baseTimeout;
+    if (inputLen > minLength) {
+      const ratio = Math.min((inputLen - minLength) / (maxLength - minLength), 1);
+      timeout = Math.round(baseTimeout + (maxTimeout - baseTimeout) * ratio);
+    }
+
     setTimeout(() => {
       if (inputValue.trim()) {
         // Redirect to search page with the input value as query parameter
         router.push(`/search?q=${encodeURIComponent(inputValue.trim())}`);
       }
-    }, 700);
+    }, timeout);
 
-    console.log("submitted:", inputValue);
+    console.log("submitted:", inputValue, "timeout:", timeout);
   };
 
   const handleOptionClick = (optionText: string) => {
@@ -52,7 +66,7 @@ export function PlaceholdersAndVanishInputDemo() {
 
   return (
     <div className="h-auto flex flex-col justify-center items-center">
-      <h2 className="mb-12 text-3xl text-center font-semibold sm:text-5xl dark:text-white text-black">
+      <h2 className="mb-8 text-3xl text-center font-semibold sm:text-5xl dark:text-white text-black">
         Ask Anything About Us.
       </h2>
       <PlaceholdersAndVanishInput
@@ -84,19 +98,9 @@ export function PlaceholdersAndVanishInputDemoNotext() {
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
 
-  const placeholders = [
-    "What's the first rule of Fight Club?",
-    "Who is Tyler Durden?",
-    "Where is Andrew Laeddis Hiding?",
-    "Write a Javascript method to reverse a string",
-    "How to assemble your own PC?",
-  ];
 
-  const options = [
-    "What is cia labs?",
-    "How do i join it?",
-    "Full form of cia labs",
-  ];
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -110,6 +114,7 @@ export function PlaceholdersAndVanishInputDemoNotext() {
       if (inputValue.trim()) {
         // Redirect to search page with the input value as query parameter
         router.push(`/search?q=${encodeURIComponent(inputValue.trim())}`);
+        setInputValue("")
       }
     }, 700);
 
